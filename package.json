@@ -1,0 +1,20 @@
+{
+  "name": "dbt_automod",
+  "version": "0.1.0",
+  "description": "#DoBetterTwitch Automod tool",
+  "main": "dbta.js",
+  "scripts": {
+    "run": "node master"
+  },
+  "keywords": [],
+  "author": "Cyrille Benoit",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "mongodb": "^4.1.1",
+    "tmi.js": "^1.8.5",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.2",
+    "xregexp": "^5.1.0"
+  }
+}
