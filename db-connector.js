@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongodb_1 = require("mongodb");
-var default_block_list_1 = require("./default-block-list");
+var default_list_1 = require("./default-list");
 require('./interfaces/User');
 require('./interfaces/Report');
 // Login to MongoDB
@@ -48,20 +48,23 @@ var connector = module.exports = {
             userId: id,
             username: name,
             mode: 'delete',
-            blockedTerms: default_block_list_1.terms,
+            blockedTerms: default_list_1.blacklist,
             watching: false,
-            trailing: false,
-            "1337": true,
-            spaces: true
+            preferences: {
+                include: false,
+                leet: true,
+                repeat: true,
+                spaces: true
+            }
         };
     },
     ensureUserExists: function (userId, username) {
         return __awaiter(this, void 0, void 0, function () {
-            var pointer, user;
+            var pointer, user, user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, mongoClient
-                            .db('tdba')
+                            .db(process.env.MONGO_DB)
                             .collection('users')
                             .find({
                             userId: { $eq: userId }
@@ -75,7 +78,15 @@ var connector = module.exports = {
                             return [2 /*return*/, user];
                         }
                         else {
-                            return [2 /*return*/, pointer[0]];
+                            user = pointer[0];
+                            return [2 /*return*/, {
+                                    userId: user.userId,
+                                    username: user.username,
+                                    mode: user.mode,
+                                    blockedTerms: user.blockedTerms,
+                                    watching: user.watching,
+                                    preferences: user.preferences,
+                                }];
                         }
                         return [2 /*return*/];
                 }
@@ -83,18 +94,18 @@ var connector = module.exports = {
         });
     },
     getUsers: function () {
-        return mongoClient.db('tdba')
+        return mongoClient.db(process.env.MONGO_DB)
             .collection('users')
             .find({})
             .toArray();
     },
     updateUser: function (user) {
-        mongoClient.db('tdba')
+        mongoClient.db(process.env.MONGO_DB)
             .collection('users')
             .updateOne({ userId: { $eq: user.userId } }, { $set: user }, { upsert: true }).catch(console.error);
     },
     createReport: function (report) {
-        mongoClient.db('tdba')
+        mongoClient.db(process.env.MONGO_DB)
             .collection('reports')
             .insertOne(report)
             .catch(console.error);
@@ -103,4 +114,5 @@ var connector = module.exports = {
         return mongoClient.connect();
     }
 };
+exports.default = connector;
 //# sourceMappingURL=db-connector.js.map

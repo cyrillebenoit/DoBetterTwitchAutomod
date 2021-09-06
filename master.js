@@ -93,6 +93,10 @@ client.on('message', function (channel, context, message, self) { return __await
                 };
                 if (self)
                     return [2 /*return*/];
+                if (message[0] !== 't') {
+                    return [2 /*return*/];
+                }
+                message = message.slice(1);
                 return [4 /*yield*/, connector.ensureUserExists(context['user-id'], context.username)];
             case 1:
                 user = _a.sent();
@@ -172,6 +176,54 @@ client.on('message', function (channel, context, message, self) { return __await
                         connector.updateUser(user);
                     }
                     reply(channel, "@" + context.username + " removed blocked term " + (term[0].toUpperCase() + '*'.repeat(term.length - 2) + term[term.length - 1].toUpperCase()));
+                }
+                if (command === '!leet') {
+                    if (!instance) {
+                        reply(channel, "@" + context.username + " DBTA has not joined your chat yet");
+                        return [2 /*return*/];
+                    }
+                    user.preferences.leet = !user.preferences.leet;
+                    instance.setLeet(user.preferences.leet);
+                    connector.updateUser(user);
+                    reply(channel, "@" + context.username + " " + (user.preferences.leet ?
+                        'Y0u ju$+ 3n4b13d 73rm d3+3c7i0n +hr0ugh 1337 m3554g3$' :
+                        'You just disabled term detection through leet messages'));
+                }
+                if (command === '!include') {
+                    if (!instance) {
+                        reply(channel, "@" + context.username + " DBTA has not joined your chat yet");
+                        return [2 /*return*/];
+                    }
+                    user.preferences.include = !user.preferences.include;
+                    instance.setInclude(user.preferences.include);
+                    connector.updateUser(user);
+                    reply(channel, "@" + context.username + " " + (user.preferences.include ?
+                        'You just _enabled_ xXincludeXx mode for termsssss' :
+                        'You just disabled include mode for terms'));
+                }
+                if (command === '!repeat') {
+                    if (!instance) {
+                        reply(channel, "@" + context.username + " DBTA has not joined your chat yet");
+                        return [2 /*return*/];
+                    }
+                    user.preferences.repeat = !user.preferences.repeat;
+                    instance.setRepeat(user.preferences.repeat);
+                    connector.updateUser(user);
+                    reply(channel, "@" + context.username + " " + (user.preferences.repeat ?
+                        'You just enabled tteerrm dddddetection throoooough reeppeeaattttted characters' :
+                        'You just disabled term detection through repeated characters'));
+                }
+                if (command === '!spaces') {
+                    if (!instance) {
+                        reply(channel, "@" + context.username + " DBTA has not joined your chat yet");
+                        return [2 /*return*/];
+                    }
+                    user.preferences.spaces = !user.preferences.spaces;
+                    instance.setSpaces(user.preferences.spaces);
+                    connector.updateUser(user);
+                    reply(channel, "@" + context.username + " " + (user.preferences.spaces ?
+                        'You just enabled t e r m detection through s p a c e d characters' :
+                        'You just disabled term detection through spaced characters'));
                 }
                 return [2 /*return*/];
         }

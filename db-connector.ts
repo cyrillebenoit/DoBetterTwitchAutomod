@@ -1,5 +1,5 @@
 import {MongoClient} from "mongodb";
-import {terms} from './default-block-list';
+import {blacklist} from './default-list';
 require('./interfaces/User');
 require('./interfaces/Report');
 
@@ -12,16 +12,19 @@ const connector = module.exports = {
             userId: id,
             username: name,
             mode: 'delete',
-            blockedTerms: terms,
+            blockedTerms: blacklist,
             watching: false,
-            trailing: false,
-            "1337": true,
-            spaces: true
+            preferences:{
+                include: false,
+                leet: true,
+                repeat: true,
+                spaces: true
+            }
         }
     },
-    async ensureUserExists(userId: string, username: string): Promise<any> {
+    async ensureUserExists(userId: string, username: string): Promise<User> {
         const pointer = await mongoClient
-            .db('tdba')
+            .db(process.env.MONGO_DB)
             .collection('users')
             .find({
                 userId: {$eq: userId}
@@ -32,17 +35,25 @@ const connector = module.exports = {
             connector.updateUser(user);
             return user;
         } else {
-            return pointer[0];
+            let user = pointer[0];
+            return {
+                userId: user.userId,
+                username: user.username,
+                mode: user.mode,
+                blockedTerms: user.blockedTerms,
+                watching: user.watching,
+                preferences: user.preferences,
+            };
         }
     },
     getUsers(): Promise<any[]> {
-        return mongoClient.db('tdba')
+        return mongoClient.db(process.env.MONGO_DB)
             .collection('users')
             .find({})
             .toArray();
     },
     updateUser(user: User): void {
-        mongoClient.db('tdba')
+        mongoClient.db(process.env.MONGO_DB)
             .collection('users')
             .updateOne({userId: {$eq: user.userId}},
                 {$set: user},
@@ -50,7 +61,7 @@ const connector = module.exports = {
             ).catch(console.error);
     },
     createReport(report: Report): void {
-        mongoClient.db('tdba')
+        mongoClient.db(process.env.MONGO_DB)
             .collection('reports')
             .insertOne(report)
             .catch(console.error);
@@ -59,3 +70,6 @@ const connector = module.exports = {
         return mongoClient.connect();
     }
 }
+
+export default connector;
+

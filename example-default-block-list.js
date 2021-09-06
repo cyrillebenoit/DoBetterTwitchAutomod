@@ -1,7 +1,12 @@
 module.exports = {
-    terms: [
+    blacklist: [
         'very',
         'offensive',
         'words'
+    ],
+    whitelist: [
+        'pretty',
+        'nice',
+        'terms'
     ]
 }

@@ -62,15 +62,16 @@ client.on('message', async (channel: string, context: { [index: string]: string 
     const instance = getInstance(context);
 
     /** List of available commands
-     *       !join           - Make DBTA join your chat
-     *       !leave          - Make DBTA leave your chat
-     *       !mode           - Set if you want to DELETE blocked messages, TIMEOUT the users or BAN them
-     *       !add_term       - Add a blocked term for your channel
-     *       !remove_term    - Remove a blocked term for your channel
-     *  TODO !1337           - Enable/Disable replacement of numbers into letters
-     *       !trailing       - Enable/Disable checking removing commonly
-     *       !spaces         - Enable/Disable checking removing spaces and symbols
-     *       !stats          - Displays how many messages have been blocked for your chat
+     *       !join          - Make DBTA join your chat
+     *       !leave         - Make DBTA leave your chat
+     *       !mode          - Set if you want to DELETE blocked messages, TIMEOUT the users or BAN them
+     *       !add_term      - Add a blocked term for your channel
+     *       !remove_term   - Remove a blocked term for your channel
+     *       !leet          - Enable/Disable replacement of numbers into letters
+     *       !include       - Enable/Disable checking for words containing blocked terms (plurals)
+     *       !spaces        - Enable/Disable checking removing spaces and symbols
+     *       !repeat        - Enable/Disable checking through repeated characters
+     *  TODO !stats         - Displays how many messages have been blocked for your chat
      */
     const command = message.split(' ')[0].toLowerCase();
 
@@ -149,6 +150,62 @@ client.on('message', async (channel: string, context: { [index: string]: string 
             connector.updateUser(user);
         }
         reply(channel, `@${context.username} removed blocked term ${term[0].toUpperCase() + '*'.repeat(term.length - 2) + term[term.length - 1].toUpperCase()}`)
+    }
+
+    if (command === '!leet') {
+        if (!instance) {
+            reply(channel, `@${context.username} DBTA has not joined your chat yet`)
+            return;
+        }
+
+        user.preferences.leet = !user.preferences.leet;
+        instance.setLeet(user.preferences.leet)
+        connector.updateUser(user);
+        reply(channel, `@${context.username} ${user.preferences.leet ?
+            'Y0u ju$+ 3n4b13d 73rm d3+3c7i0n +hr0ugh 1337 m3554g3$' :
+            'You just disabled term detection through leet messages'}`)
+    }
+
+    if (command === '!include') {
+        if (!instance) {
+            reply(channel, `@${context.username} DBTA has not joined your chat yet`)
+            return;
+        }
+
+        user.preferences.include = !user.preferences.include;
+        instance.setInclude(user.preferences.include)
+        connector.updateUser(user);
+        reply(channel, `@${context.username} ${user.preferences.include ?
+            'You just _enabled_ xXincludeXx mode for termsssss' :
+            'You just disabled include mode for terms'}`)
+    }
+
+    if (command === '!repeat') {
+        if (!instance) {
+            reply(channel, `@${context.username} DBTA has not joined your chat yet`)
+            return;
+        }
+
+        user.preferences.repeat = !user.preferences.repeat;
+        instance.setRepeat(user.preferences.repeat)
+        connector.updateUser(user);
+        reply(channel, `@${context.username} ${user.preferences.repeat ?
+            'You just enabled tteerrm dddddetection throoooough reeppeeaattttted characters' :
+            'You just disabled term detection through repeated characters'}`)
+    }
+
+    if (command === '!spaces') {
+        if (!instance) {
+            reply(channel, `@${context.username} DBTA has not joined your chat yet`)
+            return;
+        }
+
+        user.preferences.spaces = !user.preferences.spaces;
+        instance.setSpaces(user.preferences.spaces)
+        connector.updateUser(user);
+        reply(channel, `@${context.username} ${user.preferences.spaces ?
+            'You just enabled t e r m detection through s p a c e d characters' :
+            'You just disabled term detection through spaced characters'}`)
     }
 });
 
