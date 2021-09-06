@@ -123,6 +123,7 @@ var DoBetterTwitchAutomod = /** @class */ (function () {
                 // check if term is blocked
                 if (_this.isBlocked(term)) {
                     _this.takeAction(context, term);
+                    return;
                 }
             }
             if (_this.settings.preferences.spaces) {
@@ -130,6 +131,7 @@ var DoBetterTwitchAutomod = /** @class */ (function () {
                 _this.settings.blockedTerms.forEach(function (term) {
                     if (block_1.includes(term)) {
                         _this.takeAction(context, term);
+                        return;
                     }
                 });
             }

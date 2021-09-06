@@ -108,6 +108,7 @@ class DoBetterTwitchAutomod {
                 // check if term is blocked
                 if (this.isBlocked(term)) {
                     this.takeAction(context, term);
+                    return;
                 }
             }
 
@@ -117,6 +118,7 @@ class DoBetterTwitchAutomod {
                 this.settings.blockedTerms.forEach(term => {
                     if (block.includes(term)) {
                         this.takeAction(context, term);
+                        return;
                     }
                 })
             }
