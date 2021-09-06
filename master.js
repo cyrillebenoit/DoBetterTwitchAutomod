@@ -93,10 +93,6 @@ client.on('message', function (channel, context, message, self) { return __await
                 };
                 if (self)
                     return [2 /*return*/];
-                if (message[0] !== 't') {
-                    return [2 /*return*/];
-                }
-                message = message.slice(1);
                 return [4 /*yield*/, connector.ensureUserExists(context['user-id'], context.username)];
             case 1:
                 user = _a.sent();
